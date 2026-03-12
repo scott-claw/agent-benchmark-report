@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Readiness Report — Exa.ai | Anon</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f5f5f3;
+      --surface:   #ffffff;
+      --border:    #e2e2de;
+      --text:      #111110;
+      --muted:     #767672;
+      --faint:     #b0b0ac;
+      --accent:    #111110;
+      --red:       #c0392b;
+      --amber:     #d97706;
+      --green:     #16a34a;
+      --blue:      #2563eb;
+      --tag-bg:    #f0f0ee;
+      --radius:    6px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-logo svg { width: 24px; height: 24px; }
+    .nav-logo-text {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .nav-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .nav-badge {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .02em;
+      color: var(--muted);
+    }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── HERO HEADER ── */
+    .report-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 32px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    .report-header-left { flex: 1; min-width: 240px; }
+    .report-company {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .company-logo {
+      width: 32px;
+      height: 32px;
+      background: var(--text);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+    .company-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .report-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .report-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 440px;
+    }
+    .report-meta {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .meta-item { font-size: 12px; color: var(--muted); }
+    .meta-item strong { color: var(--text); font-weight: 500; }
+
+    /* ── BIG SCORE ── */
+    .score-hero {
+      text-align: center;
+      min-width: 180px;
+    }
+    .score-ring {
+      position: relative;
+      display: inline-block;
+      width: 140px;
+      height: 140px;
+    }
+    .score-ring svg {
+      transform: rotate(-90deg);
+      width: 140px;
+      height: 140px;
+    }
+    .score-ring-track {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 8;
+    }
+    .score-ring-fill {
+      fill: none;
+      stroke: var(--text);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 351.86;
+      stroke-dashoffset: 140.74; /* 351.86 * (1 - 0.60) */
+      transition: stroke-dashoffset 1.2s ease;
+    }
+    .score-ring-inner {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .score-number {
+      font-family: Georgia, serif;
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--text);
+    }
+    .score-denom {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .score-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .score-grade {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-top: 6px;
+      background: #fef3c7;
+      color: #92400e;
+      letter-spacing: .03em;
+    }
+
+    /* ── SECTION LABELS ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 16px;
+    }
+
+    /* ── DIMENSION CARDS ── */
+    .dimensions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 640px) { .dimensions { grid-template-columns: 1fr; } }
+
+    .dim-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .dim-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .dim-name {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .dim-score {
+      font-family: Georgia, serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .dim-score-denom {
+      font-size: 11px;
+      color: var(--faint);
+    }
+    .dim-bar-track {
+      height: 3px;
+      background: var(--border);
+      border-radius: 100px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .dim-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: var(--text);
+    }
+    .dim-bar-fill.amber { background: var(--amber); }
+    .dim-bar-fill.red   { background: var(--red); }
+    .dim-bar-fill.green { background: var(--green); }
+
+    .dim-finding {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── AGENT TABLE ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .card-note {
+      font-size: 11px;
+      color: var(--faint);
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 10px 20px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      border-bottom: 1px solid var(--border);
+      background: #fafaf9;
+    }
+    td {
+      padding: 12px 20px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafaf9; }
+
+    .agent-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .agent-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text);
+      flex-shrink: 0;
+    }
+    .score-cell {
+      font-family: Georgia, serif;
+      font-size: 15px;
+    }
+    .score-cell.high  { color: var(--green); }
+    .score-cell.mid   { color: var(--amber); }
+    .score-cell.low   { color: var(--red);   }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 100px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .pill.pass { background: #dcfce7; color: #15803d; }
+    .pill.fail { background: #fee2e2; color: #b91c1c; }
+    .pill.partial { background: #fef3c7; color: #92400e; }
+
+    /* ── COMPETITOR TABLE ── */
+    .comp-row-you td { background: #f8f7f5; font-weight: 500; }
+
+    /* ── KEY FINDINGS ── */
+    .findings-list { list-style: none; padding: 0; }
+    .finding-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .finding-item:last-child { border-bottom: none; }
+    .finding-icon {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .finding-icon.warn  { background: #fef3c7; color: #92400e; }
+    .finding-icon.bad   { background: #fee2e2; color: #b91c1c; }
+    .finding-icon.good  { background: #dcfce7; color: #15803d; }
+    .finding-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+    .finding-text span { color: var(--muted); }
+
+    /* ── GATE ── */
+    .gate-wrapper {
+      position: relative;
+      margin-top: 48px;
+    }
+    .gate-preview {
+      filter: blur(4px);
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.5;
+    }
+    .gate-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gate-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 40px 48px;
+      text-align: center;
+      max-width: 420px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .gate-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 12px;
+    }
+    .gate-title {
+      font-family: Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    .gate-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .gate-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .gate-feature {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .gate-feature::before {
+      content: '→';
+      color: var(--text);
+      font-size: 11px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--text);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 11px 24px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: .01em;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .gate-note {
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 14px;
+    }
+
+    /* ── FULL REPORT BADGE ── */
+    .full-report-section {
+      margin-top: 48px;
+    }
+    .full-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--text);
+      color: #fff;
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .full-badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #4ade80;
+    }
+
+    /* ── AGENT RUN LOG ── */
+    .log-entry {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 140px 1fr auto;
+      gap: 16px;
+      align-items: start;
+      font-size: 12px;
+    }
+    .log-entry:last-child { border-bottom: none; }
+    .log-agent { font-weight: 600; color: var(--text); }
+    .log-step { color: var(--muted); line-height: 1.5; }
+    .log-status { flex-shrink: 0; }
+
+    /* ── RECOMMENDATIONS ── */
+    .rec-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .rec-item:last-child { border-bottom: none; }
+    .rec-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .rec-content {}
+    .rec-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+    .rec-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .rec-impact {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-top: 5px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 40px 0;
+    }
+    .section-title {
+      font-family: Georgia, serif;
+      font-size: 20px;
+      font-weight: 400;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 80px;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--faint);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    footer a { color: var(--faint); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── TABS ── */
+    .report-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color .15s;
+    }
+    .tab-btn.active {
+      color: var(--text);
+      border-bottom-color: var(--text);
+    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .run-indicator {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .run-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <span class="nav-logo-text">Anon</span>
+  </a>
+  <div class="nav-meta">
+    <span>Agent Readiness Report</span>
+    <span class="nav-badge">Free Report</span>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="page">
+
+  <!-- REPORT HEADER -->
+  <div class="report-header">
+    <div class="report-header-left">
+      <div class="report-company">
+        <div class="company-logo">Ex</div>
+        <span class="company-name">exa.ai</span>
+      </div>
+      <h1 class="report-title">Agent Readiness<br>Report</h1>
+      <p class="report-subtitle">How well AI agents can discover, evaluate, and onboard with your product — tested live across three agents.</p>
+      <div class="report-meta">
+        <span class="meta-item"><strong>Run</strong> March 12, 2026</span>
+        <span class="meta-item"><strong>Agents</strong> Claude Code · Cursor · Windsurf</span>
+        <span class="meta-item"><strong>Version</strong> Lite (3-agent)</span>
+      </div>
+    </div>
+    <div class="score-hero">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <circle class="score-ring-track" cx="60" cy="60" r="56"/>
+          <circle class="score-ring-fill" cx="60" cy="60" r="56"
+            style="stroke-dashoffset: calc(351.86 * (1 - 0.60))"/>
+        </svg>
+        <div class="score-ring-inner">
+          <div class="score-number">60</div>
+          <div class="score-denom">/ 100</div>
+        </div>
+      </div>
+      <div class="score-label">Agent Readiness Score</div>
+      <div class="score-grade">Needs Work</div>
+    </div>
+  </div>
+
+  <!-- DIMENSION CARDS -->
+  <div class="section-label">SCORE BREAKDOWN</div>
+  <div class="dimensions">
+
+    <div class="dim-card">
+      <div class="dim-card-header">
+        <div class="dim-name">Discoverability</div>
+        <div><span class="dim-score">71</span><span class="dim-score-denom"> /100</span></div>
+      </div>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill amber" style="width:71%"></div>
+      </div>
+      <div class="dim-finding">Agents found Exa in 2 of 3 runs when prompted with "best search API for AI agents." Not surfaced in general web research prompts.</div>
+    </div>
+
+    <div class="dim-card">
+      <div class="dim-card-header">
+        <div class="dim-name">Choice</div>
+        <div><span class="dim-score">64</span><span class="dim-score-denom"> /100</span></div>
+      </div>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill amber" style="width:64%"></div>
+      </div>
+      <div class="dim-finding">When asked to pick a search API, agents chose Tavily in 2 of 3 runs citing "easier onboarding." Exa won on quality signals but lost on friction.</div>
+    </div>
+
+    <div class="dim-card">
+      <div class="dim-card-header">
+        <div class="dim-name">Implementation</div>
+        <div><span class="dim-score">44</span><span class="dim-score-denom"> /100</span></div>
+      </div>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill red" style="width:44%"></div>
+      </div>
+      <div class="dim-finding">0 of 3 agents completed autonomous signup. All stalled at email verification. Two abandoned and defaulted to Tavily. One asked the user for help.</div>
+    </div>
+
+  </div>
+
+  <!-- KEY FINDINGS -->
+  <div class="card" style="margin-bottom: 32px;">
+    <div class="card-header">
+      <span class="card-title">Key Findings</span>
+      <span class="card-note">3-agent run · March 12, 2026</span>
+    </div>
+    <ul class="findings-list">
+      <li class="finding-item">
+        <div class="finding-icon bad">✕</div>
+        <div class="finding-text"><strong>Signup is fully blocked for autonomous agents.</strong> <span>Email verification requires inbox access an agent doesn't have. Zero of three agents completed signup without human intervention.</span></div>
+      </li>
+      <li class="finding-item">
+        <div class="finding-icon warn">!</div>
+        <div class="finding-text"><strong>Tavily is winning the choice decision on friction, not quality.</strong> <span>Agents explicitly cited "fewer steps to first API call" when selecting Tavily over Exa. Your product quality is recognized — the signup barrier costs you the conversion.</span></div>
+      </li>
+      <li class="finding-item">
+        <div class="finding-icon warn">!</div>
+        <div class="finding-text"><strong>No llms.txt or agent-readable docs detected.</strong> <span>Agents fell back to scraping your landing page and GitHub README. Structured agent documentation would improve discoverability and choice scores significantly.</span></div>
+      </li>
+      <li class="finding-item">
+        <div class="finding-icon good">✓</div>
+        <div class="finding-text"><strong>API quality and documentation depth are strong signals.</strong> <span>Once agents located the docs, they rated Exa's API design highly. The problem is upstream — discovery and auth, not the product itself.</span></div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- AGENT RUNS TABLE -->
+  <div class="card" style="margin-bottom: 40px;">
+    <div class="card-header">
+      <span class="card-title">Agent Run Results</span>
+      <span class="card-note">Lite report: 3 agents, 1 run each</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Agent</th>
+          <th>Discoverability</th>
+          <th>Choice</th>
+          <th>Signup</th>
+          <th>API Key</th>
+          <th>Overall</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="agent-name"><div class="agent-dot"></div>Claude Code</div></td>
+          <td class="score-cell mid">74</td>
+          <td class="score-cell mid">68</td>
+          <td><span class="pill fail">Failed</span></td>
+          <td><span class="pill fail">Not obtained</span></td>
+          <td class="score-cell mid">62</td>
+        </tr>
+        <tr>
+          <td><div class="agent-name"><div class="agent-dot"></div>Cursor</div></td>
+          <td class="score-cell mid">70</td>
+          <td class="score-cell mid">61</td>
+          <td><span class="pill fail">Failed</span></td>
+          <td><span class="pill fail">Not obtained</span></td>
+          <td class="score-cell low">58</td>
+        </tr>
+        <tr>
+          <td><div class="agent-name"><div class="agent-dot"></div>Windsurf</div></td>
+          <td class="score-cell mid">68</td>
+          <td class="score-cell mid">63</td>
+          <td><span class="pill fail">Failed</span></td>
+          <td><span class="pill fail">Not obtained</span></td>
+          <td class="score-cell low">59</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- COMPETITOR COMPARISON (partial, teaser) -->
+  <div class="section-title">Competitive Benchmark</div>
+  <div class="card" style="margin-bottom: 0;">
+    <div class="card-header">
+      <span class="card-title">Search APIs · 3-Agent Average</span>
+      <span class="card-note">vs. top competitors</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Discoverability</th>
+          <th>Choice</th>
+          <th>Implementation</th>
+          <th>Overall</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Tavily</strong></td>
+          <td class="score-cell mid">76</td>
+          <td class="score-cell high">81</td>
+          <td class="score-cell high">79</td>
+          <td class="score-cell high">79</td>
+        </tr>
+        <tr class="comp-row-you">
+          <td><strong>Exa ← you</strong></td>
+          <td class="score-cell mid">71</td>
+          <td class="score-cell mid">64</td>
+          <td class="score-cell low">44</td>
+          <td class="score-cell mid">60</td>
+        </tr>
+        <tr>
+          <td><strong>Serper</strong></td>
+          <td class="score-cell mid">69</td>
+          <td class="score-cell mid">67</td>
+          <td class="score-cell mid">62</td>
+          <td class="score-cell mid">66</td>
+        </tr>
+        <tr>
+          <td style="color:var(--faint)"><strong>Brave Search API</strong></td>
+          <td class="score-cell low" style="color:var(--faint)">54</td>
+          <td class="score-cell low" style="color:var(--faint)">49</td>
+          <td class="score-cell low" style="color:var(--faint)">41</td>
+          <td class="score-cell low" style="color:var(--faint)">48</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       GATE — FULL REPORT
+  ═══════════════════════════════════════════ -->
+  <div class="gate-wrapper">
+
+    <!-- BLURRED PREVIEW -->
+    <div class="gate-preview">
+      <div class="divider"></div>
+      <div class="full-report-section">
+        <div class="full-badge"><div class="full-badge-dot"></div>Full Report</div>
+        <div class="section-title">11-Agent Deep Analysis</div>
+        <div class="dimensions">
+          <div class="dim-card">
+            <div class="dim-card-header">
+              <div class="dim-name">Discoverability</div>
+              <div><span class="dim-score">71</span></div>
+            </div>
+            <div class="dim-bar-track"><div class="dim-bar-fill" style="width:71%"></div></div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-card-header">
+              <div class="dim-name">Choice</div>
+              <div><span class="dim-score">63</span></div>
+            </div>
+            <div class="dim-bar-track"><div class="dim-bar-fill amber" style="width:63%"></div></div>
+          </div>
+          <div class="dim-card">
+            <div class="dim-card-header">
+              <div class="dim-name">Implementation</div>
+              <div><span class="dim-score">47</span></div>
+            </div>
+            <div class="dim-bar-track"><div class="dim-bar-fill red" style="width:47%"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">11-Agent Run Matrix</span></div>
+          <table>
+            <thead><tr><th>Agent</th><th>Discoverability</th><th>Choice</th><th>Signup</th><th>API Key</th><th>Overall</th></tr></thead>
+            <tbody>
+              <tr><td>Claude Code</td><td>74</td><td>68</td><td>—</td><td>—</td><td>62</td></tr>
+              <tr><td>Cursor</td><td>70</td><td>61</td><td>—</td><td>—</td><td>58</td></tr>
+              <tr><td>Windsurf</td><td>68</td><td>63</td><td>—</td><td>—</td><td>59</td></tr>
+              <tr><td>Devin</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>Perplexity</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Prioritized Recommendations</span></div>
+          <div class="rec-item"><div class="rec-num">1</div><div class="rec-content"><div class="rec-title">Add agent signup API endpoint</div><div class="rec-desc">This alone would raise your Implementation score by an estimated 30–35 points.</div><div class="rec-impact">HIGHEST IMPACT</div></div></div>
+          <div class="rec-item"><div class="rec-num">2</div><div class="rec-content"><div class="rec-title">Publish llms.txt</div><div class="rec-desc">Structured agent docs would improve Discoverability by 8–12 points.</div></div></div>
+          <div class="rec-item"><div class="rec-num">3</div><div class="rec-content"><div class="rec-title">Add /.well-known/anon.json</div><div class="rec-desc">Signal agent-readiness to compliant agent frameworks.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GATE OVERLAY -->
+    <div class="gate-overlay">
+      <div class="gate-card">
+        <div class="gate-label">Full Report</div>
+        <h2 class="gate-title">See the complete picture.</h2>
+        <p class="gate-desc">The full report runs 11 agents across 3 independent passes, giving you a statistically reliable average — not a single snapshot.</p>
+        <ul class="gate-features">
+          <li class="gate-feature">11 agents: Claude, Cursor, Windsurf, Devin, Perplexity, ChatGPT, Gemini, Copilot + 3 more</li>
+          <li class="gate-feature">3 independent runs per agent — true average, not a single data point</li>
+          <li class="gate-feature">Full session logs: every tool call, query, and decision branch</li>
+          <li class="gate-feature">Prioritized fix recommendations with estimated score impact</li>
+          <li class="gate-feature">Extended competitive benchmark vs. 8 competitors</li>
+          <li class="gate-feature">Monthly re-runs to track improvement over time</li>
+        </ul>
+        <a href="#" class="btn-primary">Unlock Full Report ↗</a>
+        <div class="gate-note">Typically delivered within 24 hours · Talk to us about pricing</div>
+      </div>
+    </div>
+
+  </div><!-- end gate-wrapper -->
+
+
+  <!-- FOOTER -->
+  <footer>
+    <span>Produced by <a href="#">Anon</a> · anon.com</span>
+    <span>exa.ai · March 12, 2026 · Confidential</span>
+    <span><a href="#">Request full report ↗</a></span>
+  </footer>
+
+</div><!-- end page -->
+
+</body>
+</html>
