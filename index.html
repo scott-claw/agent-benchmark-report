@@ -492,17 +492,17 @@
 const LOGO = domain => `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 
 const agents = [
-  { name: 'Claude Code',    domain: 'anthropic.com', type: 'Coding',     disc: 74, choice: 68, signup: 'fail',    avg: 62 },
-  { name: 'Cursor',         domain: 'cursor.sh',     type: 'Coding',     disc: 72, choice: 65, signup: 'fail',    avg: 60 },
-  { name: 'Windsurf',       domain: 'codeium.com',   type: 'Coding',     disc: 70, choice: 64, signup: 'fail',    avg: 59 },
-  { name: 'Devin',          domain: 'cognition.ai',  type: 'Coding',     disc: 73, choice: 66, signup: 'partial', avg: 63 },
-  { name: 'GitHub Copilot', domain: 'github.com',    type: 'Coding',     disc: 68, choice: 61, signup: 'fail',    avg: 57 },
-  { name: 'ChatGPT',        domain: 'openai.com',    type: 'General',    disc: 58, choice: 62, signup: 'fail',    avg: 53 },
-  { name: 'Gemini',         domain: 'google.com',    type: 'General',    disc: 55, choice: 58, signup: 'fail',    avg: 50 },
-  { name: 'Perplexity',     domain: 'perplexity.ai', type: 'Research',   disc: 77, choice: 71, signup: 'fail',    avg: 66 },
-  { name: 'Manus',          domain: 'manus.ai',      type: 'Autonomous', disc: 71, choice: 63, signup: 'partial', avg: 61 },
-  { name: 'OpenClaw',       domain: 'openclaw.ai',   type: 'Autonomous', disc: 74, choice: 67, signup: 'partial', avg: 64 },
-  { name: 'n8n Agent',      domain: 'n8n.io',        type: 'Workflow',   disc: 62, choice: 58, signup: 'fail',    avg: 53 },
+  { name: 'Claude Code',    domain: 'anthropic.com', model: 'Claude Sonnet 3.7',  resources: 'Local · No browser',      disc: 74, choice: 68, signup: 'fail',    avg: 62 },
+  { name: 'Cursor',         domain: 'cursor.sh',     model: 'Claude Sonnet 3.7',  resources: 'Local · No browser',      disc: 72, choice: 65, signup: 'fail',    avg: 60 },
+  { name: 'Windsurf',       domain: 'codeium.com',   model: 'Claude Sonnet 3.7',  resources: 'Local · No browser',      disc: 70, choice: 64, signup: 'fail',    avg: 59 },
+  { name: 'Devin',          domain: 'cognition.ai',  model: 'Claude Sonnet 3.7',  resources: 'Hosted · Browser',        disc: 73, choice: 66, signup: 'partial', avg: 63 },
+  { name: 'GitHub Copilot', domain: 'github.com',    model: 'GPT-4o',             resources: 'Local · No browser',      disc: 68, choice: 61, signup: 'fail',    avg: 57 },
+  { name: 'ChatGPT',        domain: 'openai.com',    model: 'GPT-4o',             resources: 'Hosted · No browser',     disc: 58, choice: 62, signup: 'fail',    avg: 53 },
+  { name: 'Gemini',         domain: 'google.com',    model: 'Gemini 2.0 Flash',   resources: 'Hosted · No browser',     disc: 55, choice: 58, signup: 'fail',    avg: 50 },
+  { name: 'Perplexity',     domain: 'perplexity.ai', model: 'Sonar (custom)',      resources: 'Hosted · No browser',     disc: 77, choice: 71, signup: 'fail',    avg: 66 },
+  { name: 'Manus',          domain: 'manus.ai',      model: 'Claude + custom',    resources: 'Hosted · Browser',        disc: 71, choice: 63, signup: 'partial', avg: 61 },
+  { name: 'OpenClaw',       domain: 'openclaw.ai',   model: 'Claude Sonnet 3.7',  resources: 'Local · Browser',         disc: 74, choice: 67, signup: 'partial', avg: 64 },
+  { name: 'n8n Agent',      domain: 'n8n.io',        model: 'GPT-4o',             resources: 'Hosted · No browser',     disc: 62, choice: 58, signup: 'fail',    avg: 53 },
 ];
 
 const competitors = [
@@ -730,12 +730,13 @@ const pages = {
         <span class="card-note">3 runs each · averages shown</span>
       </div>
       <table>
-        <thead><tr><th>Agent</th><th>Type</th><th>Discovery</th><th>Choice</th><th>Signup</th><th>API Key</th><th>Avg</th></tr></thead>
+        <thead><tr><th>Agent</th><th>Model</th><th>Resources</th><th>Discovery</th><th>Choice</th><th>Signup</th><th>API Key</th><th>Avg</th></tr></thead>
         <tbody>
           ${agents.map((a, i) => `
           <tr>
             <td><div class="logo-cell">${logoImg(a.domain)} ${a.name}</div></td>
-            <td style="color:var(--muted);font-size:11px">${a.type}</td>
+            <td style="color:var(--muted);font-size:11px">${a.model}</td>
+            <td style="font-size:11px;color:var(--muted)">${a.resources}</td>
             <td class="${i >= 3 ? 'score-blur' : ''}">${scoreCell(a.disc)}</td>
             <td class="${i >= 3 ? 'score-blur' : ''}">${scoreCell(a.choice)}</td>
             <td class="${i >= 3 ? 'score-blur' : ''}">${pill(a.signup)}</td>
@@ -743,7 +744,7 @@ const pages = {
             <td class="${i >= 3 ? 'score-blur' : ''}">${scoreCell(a.avg)}</td>
           </tr>`).join('')}
           <tr style="background:#f8f7f5">
-            <td colspan="2" style="font-size:11px;font-weight:700;color:var(--muted)">AVERAGE</td>
+            <td colspan="3" style="font-size:11px;font-weight:700;color:var(--muted)">AVERAGE</td>
             <td class="heatmap-mid score-blur">69</td><td class="heatmap-mid score-blur">62</td>
             <td colspan="2" class="score-blur" style="font-size:11px;color:var(--red);font-weight:600">0 / 33 runs succeeded</td>
             <td class="score-blur" style="font-family:Georgia,serif;font-size:15px;font-weight:600">59</td>
