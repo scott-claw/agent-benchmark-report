@@ -323,15 +323,9 @@
     .finding-text span { color: var(--muted); }
 
     /* ─── "YOU" INDICATOR ─── */
-    .table-you-wrapper { position: relative; overflow: visible; }
+    .table-you-wrapper { position: relative; }
     .comp-row-you td { background: #f8f7f5 !important; }
     .comp-row-you td:first-child { font-weight: 600; }
-    #you-pointer, #you-pointer-2 {
-      position: absolute; left: -84px;
-      display: flex; align-items: center; gap: 4px;
-      font-size: 10px; font-weight: 600; color: var(--muted);
-      pointer-events: none; white-space: nowrap;
-    }
     .comp-delta-pos { font-size: 10px; color: var(--red); font-weight: 600; }
     .comp-delta-neg { font-size: 10px; color: var(--green); font-weight: 600; }
 
@@ -963,10 +957,7 @@ const pages = {
             </tr>`).join('')}
           </tbody>
         </table>
-        <div id="you-pointer-2" style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--muted);pointer-events:none;white-space:nowrap;">
-          You
-          <svg width="52" height="10" viewBox="0 0 52 10" fill="none"><line x1="0" y1="5" x2="44" y2="5" stroke="#b0b0ac" stroke-width="1.2"/><path d="M44 2L50 5L44 8" stroke="#b0b0ac" stroke-width="1.2" fill="none" stroke-linejoin="round"/></svg>
-        </div>
+
       </div>
     </div>
 
@@ -1153,21 +1144,7 @@ function toggleUnlock() {
   alignYouPointers();
 }
 
-// ─── YOU POINTER ALIGNMENT ──────────────────────────────
-function alignYouPointers() {
-  requestAnimationFrame(() => {
-    ['you-pointer','you-pointer-2'].forEach(id => {
-      const ptr = document.getElementById(id);
-      if (!ptr) return;
-      const wrap = ptr.parentElement;
-      const row = document.getElementById('comp-you-row');
-      if (!wrap || !row) return;
-      const wr = wrap.getBoundingClientRect();
-      const rr = row.getBoundingClientRect();
-      ptr.style.top = (rr.top - wr.top + rr.height/2 - 5) + 'px';
-    });
-  });
-}
+function alignYouPointers() {}
 
 // ─── INIT ────────────────────────────────────────────────
 render();
