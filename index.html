@@ -253,6 +253,9 @@
     .heatmap-mid  { background: #fef3c7; color: #92400e; font-weight: 600; text-align: center; }
     .heatmap-low  { background: #fee2e2; color: #b91c1c; font-weight: 600; text-align: center; }
 
+    .score-blur { filter: blur(4px); transition: filter .3s; user-select: none; }
+    body.unlocked .score-blur { filter: none; user-select: auto; }
+
     /* ─── OVERVIEW PAGE ─── */
     .overview-header {
       display: flex; align-items: flex-start; justify-content: space-between;
@@ -723,54 +726,33 @@ const pages = {
 
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Agents 1–3 of 11</span>
-        <span class="card-note">Free preview</span>
+        <span class="card-title">All 11 Agents</span>
+        <span class="card-note">3 runs each · averages shown</span>
       </div>
       <table>
         <thead><tr><th>Agent</th><th>Type</th><th>Discovery</th><th>Choice</th><th>Signup</th><th>API Key</th><th>Avg</th></tr></thead>
         <tbody>
-          ${agents.slice(0,3).map(a => `
+          ${agents.map((a, i) => `
           <tr>
             <td><div class="logo-cell">${logoImg(a.domain)} ${a.name}</div></td>
             <td style="color:var(--muted);font-size:11px">${a.type}</td>
-            <td>${scoreCell(a.disc)}</td>
-            <td>${scoreCell(a.choice)}</td>
-            <td>${pill(a.signup)}</td>
-            <td>${pill('fail')}</td>
-            <td>${scoreCell(a.avg)}</td>
+            <td class="${i >= 3 ? 'score-blur' : ''}">${scoreCell(a.disc)}</td>
+            <td class="${i >= 3 ? 'score-blur' : ''}">${scoreCell(a.choice)}</td>
+            <td class="${i >= 3 ? 'score-blur' : ''}">${pill(a.signup)}</td>
+            <td class="${i >= 3 ? 'score-blur' : ''}">${pill('fail')}</td>
+            <td class="${i >= 3 ? 'score-blur' : ''}">${scoreCell(a.avg)}</td>
           </tr>`).join('')}
+          <tr style="background:#f8f7f5">
+            <td colspan="2" style="font-size:11px;font-weight:700;color:var(--muted)">AVERAGE</td>
+            <td class="heatmap-mid score-blur">69</td><td class="heatmap-mid score-blur">62</td>
+            <td colspan="2" class="score-blur" style="font-size:11px;color:var(--red);font-weight:600">0 / 33 runs succeeded</td>
+            <td class="score-blur" style="font-family:Georgia,serif;font-size:15px;font-weight:600">59</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     ${gateWrap(`
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">All 11 Agents</span>
-          <span class="card-note">3 runs each · averages shown</span>
-        </div>
-        <table>
-          <thead><tr><th>Agent</th><th>Type</th><th>Discovery</th><th>Choice</th><th>Signup</th><th>API Key</th><th>Avg</th></tr></thead>
-          <tbody>
-            ${agents.map(a => `
-            <tr>
-              <td><div class="logo-cell">${logoImg(a.domain)} ${a.name}</div></td>
-              <td style="color:var(--muted);font-size:11px">${a.type}</td>
-              <td>${scoreCell(a.disc)}</td>
-              <td>${scoreCell(a.choice)}</td>
-              <td>${pill(a.signup)}</td>
-              <td>${pill('fail')}</td>
-              <td>${scoreCell(a.avg)}</td>
-            </tr>`).join('')}
-            <tr style="background:#f8f7f5">
-              <td colspan="2" style="font-size:11px;font-weight:700;color:var(--muted)">AVERAGE</td>
-              <td class="heatmap-mid">69</td><td class="heatmap-mid">62</td>
-              <td colspan="2" style="font-size:11px;color:var(--red);font-weight:600">0 / 33 runs succeeded</td>
-              <td style="font-family:Georgia,serif;font-size:15px;font-weight:600">59</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
 
       <div class="card">
         <div class="card-header"><span class="card-title">Agent × Dimension Heatmap</span><span class="card-note">Relative performance across sub-dimensions</span></div>
