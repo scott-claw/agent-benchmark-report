@@ -627,12 +627,8 @@ const pages = {
           <div class="finding-text"><strong>Tavily wins the choice decision in 24 of 33 runs.</strong> <span>Agents cite "fewer steps to first API call." Exa wins on quality but loses the conversion on friction.</span></div>
         </li>
       </ul>
-    </div>
-
-    ${gateWrap(`
-      <div class="card">
-        <div class="card-header"><span class="card-title">Key Findings (continued)</span></div>
-        <ul class="findings-list">
+      <div style="position:relative">
+        <ul class="findings-list gate-blur">
           <li class="finding-item">
             <div class="finding-icon warn">!</div>
             <div class="finding-text"><strong>Discoverability gaps by agent type.</strong> <span>Coding agents surface Exa in 85% of runs. General-purpose agents (ChatGPT, Gemini) surface Exa in under 40% of prompts — a 45-point gap driven by training data distribution.</span></div>
@@ -650,12 +646,11 @@ const pages = {
             <div class="finding-text"><strong>API design quality is best-in-class once reached.</strong> <span>Every agent that located the OpenAPI spec constructed valid API calls without additional guidance. The barrier is entirely upstream — not the product.</span></div>
           </li>
         </ul>
+        <div class="gate-overlay" style="background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.6) 30%);">
+          <button class="btn-primary" onclick="toggleUnlock()" style="font-size:12px;padding:8px 18px">🔒 Unlock 4 more findings</button>
+        </div>
       </div>
-    `, 'Full findings unlocked', [
-      '4 additional key findings',
-      'Agent-type breakdown analysis',
-      'Root cause attribution per failure',
-    ])}
+    </div>
   `,
 
   scores: () => `
